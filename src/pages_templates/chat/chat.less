@@ -1,0 +1,70 @@
+@grey-color: #EFEFEF;
+@left-size: 310px;
+
+.chat {
+  display: flex;
+  height: 100%;
+
+  .left {
+    width: @left-size;
+    height: 100%;
+    padding: 5px 10px;
+    border-right: 1px solid #EAEAEA;
+    background-color: #FBFBFB;
+
+    .head {
+      margin-bottom: 14px;
+
+      .profile {
+        display: flex;
+        align-items: center;
+
+        .avatar {
+          width: 47px;
+          height: 47px;
+          border: 1px solid @grey-color;
+          border-radius: 50%;
+          background-color: @grey-color;
+        }
+
+        .name {
+          color: #1E1E1E;
+          font-weight: 600;
+          font-size: 13px;
+          line-height: 13px;
+          margin-left: 10px;
+          text-decoration: none;
+        }
+      }
+
+      .grey-input {
+        width: 100%;
+        margin-top: 4px;
+        height: 32px;
+        background: @grey-color;
+        border-radius: 5px;
+        padding: 10px;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 12px;
+        color: #1E1E1E;
+        border: none;
+        outline: none;
+      }
+    }
+
+    .chat-list {
+      border-top: 1px solid #EAEAEA;
+    }
+  }
+
+  .right {
+    width: calc(100% - @left-size);
+  }
+
+  .dummy {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+}
