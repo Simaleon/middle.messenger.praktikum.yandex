@@ -237,7 +237,13 @@ function proceedNode(node, componentDesc, localContext) {
 
                 let condition = false;  // condition completed flag
 
+                const children = [];
+                // create separate array to avoid errors during 'for' attribute working
                 node.childNodes.forEach(child => {
+                    children.push(child);
+                });
+
+                children.forEach(child => {
                     if (child.nodeType === 3) {
                         proceedNode(child, componentDesc, localContext);
                     } else {
@@ -248,6 +254,8 @@ function proceedNode(node, componentDesc, localContext) {
                                 proceedNode(child, componentDesc, localContext);
 
                                 condition = true;
+                            } else {
+                                child.parentElement.removeChild(child);
                             }
                         } else {
                             const elseIfStatement = child.getAttribute('else-if');
@@ -257,12 +265,16 @@ function proceedNode(node, componentDesc, localContext) {
                                     proceedNode(child, componentDesc, localContext);
 
                                     condition = true;
+                                } else {
+                                    child.parentElement.removeChild(child);
                                 }
                             } else {
                                 const elseStatement = child.getAttribute('else');
 
                                 if (elseStatement === '') {
-                                    if (!condition) {
+                                    if (condition) {
+                                        child.parentElement.removeChild(child);
+                                    } else {
                                         proceedNode(child, componentDesc, localContext);
                                     }
                                 } else {
