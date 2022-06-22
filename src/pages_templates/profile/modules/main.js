@@ -45,7 +45,7 @@ export default {
                 <a href="/profilePass.html" class="property">Изменить пароль</a>
             </div>
             <div class="data-string buttons red">
-                <a href="/login.html" class="property">Выйти</a>
+                <a href="/index.html" class="property">Выйти</a>
             </div>
         </div>
     `

@@ -22,7 +22,7 @@ export default {
                 </div>
                 <div class="actions">
                     <main-button class="blue" text="Зарегистрироваться"></main-button>
-                    <a href="/login.html" class="link">Войти</a>
+                    <a href="/index.html" class="link">Войти</a>
                 </div>
             </form>
         </div>
