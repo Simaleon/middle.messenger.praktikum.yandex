@@ -1,0 +1,80 @@
+@placeholder-font-size: 9px;
+@placeholder-margin: @placeholder-font-size + 8px;
+
+.wrap-input {
+  position: relative;
+  width: 100%;
+  padding-top: @placeholder-margin;
+
+  input {
+    width: 100%;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+    padding: 7px 0;
+  }
+
+  .focus-input {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: calc(100% - @placeholder-margin);
+    top: @placeholder-margin;
+    left: 0;
+    pointer-events: none;
+    border-bottom: 2px solid #a4cef3;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      -webkit-transition: all .4s;
+      -o-transition: all .4s;
+      -moz-transition: all .4s;
+      transition: all .4s;
+    }
+
+    &:after {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.2;
+      content: attr(data-placeholder);
+      display: block;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 7px 0;
+      transition: all .4s;
+    }
+  }
+
+  input:focus + .focus-input::before {
+    width: 100%;
+    background: #3369F3;
+  }
+
+  input:focus + .focus-input::after {
+    top: -@placeholder-margin;
+    font-size: @placeholder-font-size;
+  }
+
+  input.has-val + .focus-input::after {
+    top: -@placeholder-margin;
+  }
+}
+
+.error-message {
+  margin-top: 7px;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 10px;
+  color: #FF2F2F;
+  user-select: none;
+}
