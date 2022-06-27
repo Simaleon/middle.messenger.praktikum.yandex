@@ -5,5 +5,5 @@ export default {
         text: '',
         type: 'submit'
     },
-    template: `<button class="btn" :type="type">{{ text }}</button>`
+    template: `<button class="button" :type="type">{{ text }}</button>`
 };

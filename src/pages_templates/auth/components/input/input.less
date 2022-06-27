@@ -1,22 +1,24 @@
+@import "/src/styles/variables";
+
 @placeholder-font-size: 9px;
 @placeholder-margin: @placeholder-font-size + 8px;
 
-.wrap-input {
-  position: relative;
-  width: 100%;
-  padding-top: @placeholder-margin;
+.auth-input {
+  &__wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: @placeholder-margin;
+  }
 
-  input {
+  &__input {
     width: 100%;
     outline: none;
     border: none;
     font-weight: 500;
-    font-size: 13px;
-    line-height: 13px;
     padding: 7px 0;
   }
 
-  .focus-input {
+  &__input-focus {
     position: absolute;
     display: block;
     width: 100%;
@@ -24,7 +26,7 @@
     top: @placeholder-margin;
     left: 0;
     pointer-events: none;
-    border-bottom: 2px solid #a4cef3;
+    border-bottom: 2px solid @light-blue;
 
     &:before {
       content: "";
@@ -41,8 +43,7 @@
     }
 
     &:after {
-      font-size: 13px;
-      color: #999;
+      color: @font-color-secondary;
       line-height: 1.2;
       content: attr(data-placeholder);
       display: block;
@@ -55,26 +56,26 @@
     }
   }
 
-  input:focus + .focus-input::before {
+  &__input:focus + &__input-focus::before {
     width: 100%;
-    background: #3369F3;
+    background: @blue-color;
   }
 
-  input:focus + .focus-input::after {
+  &__input:focus + &__input-focus::after {
     top: -@placeholder-margin;
     font-size: @placeholder-font-size;
   }
 
-  input.has-val + .focus-input::after {
+  &__input.has-val + &__input-focus::after {
     top: -@placeholder-margin;
   }
-}
 
-.error-message {
-  margin-top: 7px;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 10px;
-  color: #FF2F2F;
-  user-select: none;
+  &__error-message {
+    margin-top: 7px;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 10px;
+    color: @red-color;
+    user-select: none;
+  }
 }

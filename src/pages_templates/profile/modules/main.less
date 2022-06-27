@@ -1,27 +1,29 @@
+@import "/src/styles/variables";
+@import "common";
+
 .profile-main {
   width: 100%;
   margin-top: 21px;
 
-  .name {
+  &__name {
     font-weight: 600;
     font-size: 16px;
     line-height: 16px;
     text-align: center;
-    color: #1E1E1E;
     user-select: none;
     margin-bottom: 60px;
   }
+}
 
-  .data-string.buttons {
-    a {
-      text-decoration: none;
-      color: #3369F3;
-    }
+.data-string__link {
+  text-decoration: none;
+  color: @blue-color;
 
-    &.red {
-      a {
-        color: #FF0000;
-      }
-    }
+  &_red {
+    color: @red-color;
   }
+}
+
+.data-string.data-string_first {
+  margin-top: 60px;
 }

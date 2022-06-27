@@ -8,12 +8,12 @@ export default {
         type: 'text',
     },
     template: `
-        <div>
-            <div class="wrap-input">
-                <input :type="type" :name="name" />
-                <span class="focus-input" :data-placeholder="placeholder"></span>
+        <div class="auth-input">
+            <div class="auth-input__wrapper">
+                <input class="auth-input__input" :type="type" :name="name" />
+                <span class="auth-input__input-focus" :data-placeholder="placeholder"></span>
             </div>
-            <div class="error-message">{{ error }}</div>
+            <div class="auth-input__error-message">{{ error }}</div>
         </div>
     `
 };

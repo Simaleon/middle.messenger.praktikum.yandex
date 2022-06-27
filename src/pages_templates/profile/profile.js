@@ -27,12 +27,12 @@ export default {
     },
     template: `
         <div class="profile">
-            <a :href="href()" class="back">
-                <div class="back-icon"></div>
+            <a :href="href()" class="profile__back-link">
+                <div class="profile__back-link-icon"></div>
             </a>
-            <div class="main">
-                <div class="main-form">
-                    <div class="avatar"></div>
+            <div class="profile-content">
+                <div class="profile-content__form">
+                    <div class="profile-content__avatar"></div>
                     <profile-main if="mode === 'preview'"></profile-main>
                     <change-data else-if="mode === 'changeData'"></change-data>
                     <change-pass else></change-pass>

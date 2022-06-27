@@ -10,9 +10,9 @@
     "start": "node ./server.js"
   },
   "devDependencies": {
-    "@parcel/transformer-less": "^2.6.1",
-    "express": "^4.18.1",
-    "parcel": "^2.6.1"
+    "@parcel/transformer-less": "=2.6.1",
+    "express": "=4.18.1",
+    "parcel": "=2.6.1"
   },
   "engines": {
     "node": ">=12"

@@ -13,16 +13,16 @@ export default {
         }
     },
     template: `
-        <div class="auth-page login">
-            <form class="auth-form">
-                <div class="top">
-                    <h1>Вход</h1>
-                    <custom-input name="login" class="login" placeholder="Логин" error="Неверный логин"></custom-input>
-                    <custom-input name="password" class="password" type="password" placeholder="Пароль" error="Неверный пароль"></custom-input>
+        <div class="auth-page auth-page_login">
+            <form class="auth-page__auth-form">
+                <div>
+                    <h1 class="auth-page__header">Вход</h1>
+                    <custom-input name="login" class="auth-page__login" placeholder="Логин" error="Неверный логин"></custom-input>
+                    <custom-input name="password" class="auth-page__password" type="password" placeholder="Пароль" error="Неверный пароль"></custom-input>
                 </div>
-                <div class="actions">
-                    <main-button class="blue" text="Войти" @click="btnClick" type="button"></main-button>
-                    <a href="/registration.html" class="link">Нет аккаунта?</a>
+                <div>
+                    <main-button class="auth-page__button button_blue" text="Войти" @click="btnClick" type="button"></main-button>
+                    <a href="/registration.html" class="auth-page__link">Нет аккаунта?</a>
                 </div>
             </form>
         </div>

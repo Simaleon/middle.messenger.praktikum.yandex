@@ -1,3 +1,5 @@
+@import "variables";
+
 @font-face {
   font-family: 'Inter';
   src: url('../../static/fonts/Inter/Inter-Regular.ttf') format('truetype');
@@ -22,11 +24,14 @@
 * {
   font-family: Inter, sans-serif;
   box-sizing: border-box;
+  color: @font-color-primary;
 }
 
 html,
 body {
   height: 100%;
+  font-size: @font-size;
+  line-height: @font-size;
 }
 
 body, h1, h2, h3, h4, h5, h6 {

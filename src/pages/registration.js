@@ -1,4 +1,4 @@
-import './style.less';
+import '../styles/style.less';
 
 import Templator from "../templator/Templator";
 import registration from "../pages_templates/auth/registration/registration";

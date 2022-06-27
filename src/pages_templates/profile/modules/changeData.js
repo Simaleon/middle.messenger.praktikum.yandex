@@ -36,10 +36,10 @@ export default {
     template: `
         <div class="change-data">
             <div for="item in dataList" class="data-string">
-                <div class="property">{{ item.property }}</div>
-                <input :value="item.value" />
+                <div class="data-string__property">{{ item.property }}</div>
+                <input class="change-data__input" :value="item.value" />
             </div>
-            <custom-button class="blue" text="Сохранить"></custom-button>
+            <custom-button class="button_blue" text="Сохранить"></custom-button>
         </div>
     `
 };
