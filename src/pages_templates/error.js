@@ -7,10 +7,10 @@ export default {
     },
     template: `
         <div class="error-page">
-            <div class="error">
-                <h1>{{ number }}</h1>
-                <p>{{ text }}</p>
-                <a href="/chat.html">Назад к чатам</a>
+            <div class="error-page__wrapper">
+                <h1 class="error-page__header">{{ number }}</h1>
+                <p class="error-page__text">{{ text }}</p>
+                <a class="error-page__back-link" href="/chat.html">Назад к чатам</a>
             </div>
         </div>
     `
