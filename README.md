@@ -4,7 +4,7 @@
 
 Небольшое веб-приложение для изучения принципов работы современных фреймворков.
 
-## Этап 1
+## Спринт 1
 
 1. Нарисован прототип экранов проекта в [Figma](https://www.figma.com/file/HJoESXd9X0SsweylgvoekW/Yandex-Precticum-chat-template?node-id=1%3A616).
 2. Настроена сборка с помощью Parcel

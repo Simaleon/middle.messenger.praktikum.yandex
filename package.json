@@ -1,9 +1,6 @@
 {
   "name": "practicum",
   "version": "0.1.0",
-  "alias": {
-    "components": "./src.components"
-  },
   "scripts": {
     "dev": "parcel src/pages/*.html",
     "build": "parcel build src/pages/*.html --no-scope-hoist",
@@ -11,8 +8,12 @@
   },
   "devDependencies": {
     "@parcel/transformer-less": "=2.6.1",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "=5.30.0",
+    "eslint": "=8.18.0",
     "express": "=4.18.1",
-    "parcel": "=2.6.1"
+    "parcel": "=2.6.1",
+    "typescript": "=4.7.4"
   },
   "engines": {
     "node": ">=12"

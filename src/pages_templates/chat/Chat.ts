@@ -1,7 +1,10 @@
+import Component from "../../templator/Component";
+
 import './chat.less';
 
-export default {
-    template: `
+export default class Chat extends Component {
+    template() {
+        return `
         <main class="chat">
             <div class="chat__nav">
                 <div class="chat__nav-header">
@@ -19,5 +22,6 @@ export default {
                 <div class="chat__dummy">Заглушка чата</div>
             </div>
         </main>
-    `
-};
+    `;
+    }
+}

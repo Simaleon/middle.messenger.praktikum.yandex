@@ -1,13 +1,18 @@
-import './registration.less';
-import input from '../components/input/input';
-import button from "../../../components/button/button";
+import Component from "../../../templator/Component";
 
-export default {
-    components: {
-        'custom-input': input,
-        'main-button': button
-    },
-    template: `
+import './registration.less';
+import input from '../components/input/Input';
+import button from "../../../components/button/Button";
+
+export default class Registration extends Component {
+    components() {
+        return {
+            'custom-input': input,
+            'main-button': button
+        }
+    }
+    template() {
+        return `
         <div class="auth-page auth-page_registration">
             <form class="auth-page__auth-form">
                 <div>
@@ -26,5 +31,6 @@ export default {
                 </div>
             </form>
         </div>
-    `
-};
+    `;
+    }
+}

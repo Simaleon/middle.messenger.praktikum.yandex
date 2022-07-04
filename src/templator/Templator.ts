@@ -1,95 +1,71 @@
+import Component from "./Component";
+
+type componentDesc = {
+    components: Record<string, typeof Component>;
+    data: Record<string, any>;
+    methods: Record<string, () => void>;
+};
+
 const TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi,
     stringRegexp = /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/,
     methodRegexp = /\D+\(\)$/;
 
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-// deep merge objects
-function merge(target, ...sources) {
-    if (!sources.length) {
-        return target;
-    }
-
-    const source = sources.shift();
-
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key]) {
-                    Object.assign(target, { [key]: {} });
-                }
-
-                merge(target[key], source[key]);
-            } else {
-                Object.assign(target, { [key]: source[key] });
-            }
-        }
-    }
-
-    return merge(target, ...sources);
-}
-
 // get value from object by string path, for example 'user.description.displayName'
-function get(obj, path, defaultValue) {
-    const keys = path.split('.');
+function get(obj: Record<string, any>, path: string): any {
+    const keys: string[] = path.split('.');
 
-    let result = obj;
-    for (let key of keys) {
+    let result: Record<string, any> = obj;
+
+    for (const key of keys) {
         result = result[key];
-
-        if (result === undefined) {
-            return defaultValue;
-        }
     }
 
-    return result ?? defaultValue; // "??" — [оператор нулевого слияния]
+    return result;
 }
 
 // parse string (with variables and methods from context) to expression and calculate result
 // logical, math, ternary condition operator and brackets not supported yet
-function parseExpression(expression, context, localContext) {
+function parseExpression(expression: string, context: Record<string, any>, localContext?: Record<string, any>): any {
     if(localContext) {
         context = Object.assign({}, context, { data: localContext });
     }
 
-    function _parseExpression(expression) {
+    function _parseExpression(expression: string): any {
         expression = expression.trim();
 
         // comparison operators
         if (expression.indexOf('===') > -1) {
-            const expressionArr = expression.split('===');
+            const expressionArr: string[] = expression.split('===');
 
             return _parseExpression(expressionArr[0]) === _parseExpression(expressionArr[1]);
         }
 
         if (expression.indexOf('!==') > -1) {
-            const expressionArr = expression.split('!==');
+            const expressionArr: string[] = expression.split('!==');
 
             return _parseExpression(expressionArr[0]) !== _parseExpression(expressionArr[1]);
         }
 
         if (expression.indexOf('>') > -1) {
-            const expressionArr = expression.split('>');
+            const expressionArr: string[] = expression.split('>');
 
             return _parseExpression(expressionArr[0]) > _parseExpression(expressionArr[1]);
         }
 
         if (expression.indexOf('>=') > -1) {
-            const expressionArr = expression.split('>=');
+            const expressionArr: string[] = expression.split('>=');
 
             return _parseExpression(expressionArr[0]) >= _parseExpression(expressionArr[1]);
         }
 
         if (expression.indexOf('<') > -1) {
-            const expressionArr = expression.split('<');
+            const expressionArr: string[] = expression.split('<');
 
             return _parseExpression(expressionArr[0]) < _parseExpression(expressionArr[1]);
         }
 
         if (expression.indexOf('<=') > -1) {
-            const expressionArr = expression.split('<=');
+            const expressionArr: string[] = expression.split('<=');
 
             return _parseExpression(expressionArr[0]) <= _parseExpression(expressionArr[1]);
         }
@@ -127,7 +103,7 @@ function parseExpression(expression, context, localContext) {
         }
 
         // check context variable
-        const value = get(context.data, expression);
+        const value: any = get(context.data, expression);
 
         if (value !== undefined) {
             return value;
@@ -135,7 +111,7 @@ function parseExpression(expression, context, localContext) {
 
         // check context method
         if (methodRegexp.test(expression)) {
-            const methodName = expression.substring(0, expression.length - 2);
+            const methodName: string = expression.substring(0, expression.length - 2);
 
             if (context.methods[methodName]) {
                 return context.methods[methodName].call(Object.assign({}, context.data, context.methods));
@@ -146,10 +122,16 @@ function parseExpression(expression, context, localContext) {
     return _parseExpression(expression);
 }
 
-function setEventHandlers(componentDesc, node, newNode = node) {
-    node.getAttributeNames().forEach(attr => {
+function setEventHandlers(componentDesc: componentDesc, node: HTMLElement, newNode: HTMLElement = node) {
+    node.getAttributeNames().forEach((attr: string) => {
         if(attr.startsWith('@')) { // methods
-            const method = componentDesc.methods && componentDesc.methods[node.getAttribute(attr)];
+            const methodName: string = node.getAttribute(attr) || '';
+
+            if(!methodName) {
+                throw new Error('Method not defined');
+            }
+
+            const method: () => void | undefined = componentDesc.methods?.[methodName];
 
             if(method) {
                 newNode.addEventListener(attr.substring(1), method);
@@ -158,16 +140,16 @@ function setEventHandlers(componentDesc, node, newNode = node) {
     });
 }
 
-function proceedNode(node, componentDesc, localContext) {
+function proceedNode(node: HTMLElement, componentDesc: componentDesc, localContext?: Record<string, any>) {
     if(node.nodeType === 3) {    // text
         // parse variables
-        let textContent = node.textContent,
+        let textContent: string = node.textContent || '',
             key = null;
 
         while ((key = TEMPLATE_REGEXP.exec(textContent))) {
             if (key[1]) {
-                const tmplValue = key[1].trim(),
-                    data = parseExpression(tmplValue, componentDesc, localContext);
+                const tmplValue: string = key[1].trim(),
+                    data: any = parseExpression(tmplValue, componentDesc, localContext);
 
                 textContent = textContent.replace(new RegExp(key[0], "gi"), data);
             }
@@ -175,19 +157,19 @@ function proceedNode(node, componentDesc, localContext) {
 
         node.textContent = textContent;
     } else {
-        const forAttr = node.getAttribute('for');
+        const forAttr: string | null = node.getAttribute('for');
 
         if(forAttr) {
-            const forAttSplit = forAttr.split('in'),
-                forVariable = forAttSplit[0].trim(),
-                forArray = get(componentDesc.data, forAttSplit[1].trim());
+            const forAttSplit: string[] = forAttr.split('in'),
+                forVariable: string = forAttSplit[0].trim(),
+                forArray: any[] = get(componentDesc.data, forAttSplit[1].trim());
 
             node.removeAttribute('for');
 
-            let currentNode = node;
+            let currentNode: HTMLElement = node;
 
-            forArray.forEach(value => {
-                const newNode = node.cloneNode(true);
+            forArray.forEach((value: any) => {
+                const newNode: HTMLElement = node.cloneNode(true) as HTMLElement;
 
                 currentNode.after(newNode);
 
@@ -202,21 +184,24 @@ function proceedNode(node, componentDesc, localContext) {
                 proceedNode(newNode, componentDesc, localContext);
             });
 
-            node.parentElement.removeChild(node);
+            node.parentElement?.removeChild(node);
         } else {
             if (node.tagName.indexOf('-') > -1) { // custom element
                 if (componentDesc.components[node.localName]) {
-                    const data = {};
+                    const data: Record<string, any> = {};
 
                     for (let i = 0; i < node.attributes.length; i++) {
                         if (node.attributes[i].name.startsWith(':')) {
                             data[node.attributes[i].name.substring(1)] = parseExpression(node.attributes[i].value, componentDesc, localContext);
+                        } else if (node.attributes[i].name === 'if' ||
+                            node.attributes[i].name === 'for') {
+                            // do nothing
                         } else {
                             data[node.attributes[i].name] = node.attributes[i].value;
                         }
                     }
 
-                    const newNode = Templator.compile(merge({}, componentDesc.components[node.localName], {data}));
+                    const newNode: HTMLElement = new componentDesc.components[node.localName](data).element() as HTMLElement;
 
                     node.classList.forEach(cssClass => {
                         newNode.classList.add(cssClass);
@@ -227,9 +212,15 @@ function proceedNode(node, componentDesc, localContext) {
                     node.replaceWith(newNode);
                 }
             } else {
-                node.getAttributeNames().forEach(attr => {
+                node.getAttributeNames().forEach((attr: string) => {
                     if (attr.startsWith(':')) {
-                        node.setAttribute(attr.substring(1), parseExpression(node.getAttribute(attr), componentDesc, localContext));
+                        const attrValue: string | null = node.getAttribute(attr);
+
+                        if(!attrValue) {
+                            throw new Error('Variable value not defined');
+                        }
+
+                        node.setAttribute(attr.substring(1), parseExpression(attrValue, componentDesc, localContext));
 
                         node.removeAttribute(attr);
                     }
@@ -237,17 +228,18 @@ function proceedNode(node, componentDesc, localContext) {
 
                 let condition = false;  // condition completed flag
 
-                const children = [];
+                const children: HTMLElement[] = [];
+
                 // create separate array to avoid errors during 'for' attribute working
                 node.childNodes.forEach(child => {
-                    children.push(child);
+                    children.push(child as HTMLElement);
                 });
 
-                children.forEach(child => {
+                children.forEach((child: HTMLElement) => {
                     if (child.nodeType === 3) {
                         proceedNode(child, componentDesc, localContext);
                     } else {
-                        const ifStatement = child.getAttribute('if');
+                        const ifStatement: string | null = child.getAttribute('if');
 
                         if (ifStatement) {
                             if (parseExpression(ifStatement, componentDesc, localContext)) {
@@ -255,10 +247,10 @@ function proceedNode(node, componentDesc, localContext) {
 
                                 condition = true;
                             } else {
-                                child.parentElement.removeChild(child);
+                                child.parentElement?.removeChild(child);
                             }
                         } else {
-                            const elseIfStatement = child.getAttribute('else-if');
+                            const elseIfStatement: string | null = child.getAttribute('else-if');
 
                             if (elseIfStatement) {
                                 if (parseExpression(elseIfStatement, componentDesc, localContext)) {
@@ -266,14 +258,14 @@ function proceedNode(node, componentDesc, localContext) {
 
                                     condition = true;
                                 } else {
-                                    child.parentElement.removeChild(child);
+                                    child.parentElement?.removeChild(child);
                                 }
                             } else {
-                                const elseStatement = child.getAttribute('else');
+                                const elseStatement: string | null = child.getAttribute('else');
 
                                 if (elseStatement === '') {
                                     if (condition) {
-                                        child.parentElement.removeChild(child);
+                                        child.parentElement?.removeChild(child);
                                     } else {
                                         proceedNode(child, componentDesc, localContext);
                                     }
@@ -294,18 +286,14 @@ function proceedNode(node, componentDesc, localContext) {
 }
 
 class Templator {
-    static parser = new DOMParser();
+    static parser: DOMParser = new DOMParser();
 
-    static compile(componentDesc, data) {
-        const doc = this.parser.parseFromString(componentDesc.template, 'text/html').body.childNodes[0];
+    static compile(template: string, componentDesc: componentDesc = { components: {}, data: {}, methods: {} }): HTMLElement {
+        const element: HTMLElement = this.parser.parseFromString(template, 'text/html').body.childNodes[0] as HTMLElement;
 
-        if(data) {
-            componentDesc = merge({}, componentDesc, { data });
-        }
+        proceedNode(element, componentDesc);
 
-        proceedNode(doc, componentDesc);
-
-        return doc;
+        return element;
     }
 }
 

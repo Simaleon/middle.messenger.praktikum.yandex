@@ -1,18 +1,25 @@
-import './login.less';
-import input from '../components/input/input';
-import button from "../../../components/button/button";
+import Component from "../../../templator/Component";
 
-export default {
-    components: {
-        'custom-input': input,
-        'main-button': button
-    },
-    methods: {
-        btnClick() {
-            location.href='/chat.html';
+import './login.less';
+import input from '../components/input/Input';
+import button from "../../../components/button/Button";
+
+export default class Login extends Component {
+    components() {
+        return {
+            'custom-input': input,
+            'main-button': button
         }
-    },
-    template: `
+    }
+    methods() {
+        return {
+            btnClick(): void {
+                location.href='/chat.html';
+            }
+        }
+    }
+    template() {
+        return `
         <div class="auth-page auth-page_login">
             <form class="auth-page__auth-form">
                 <div>
@@ -26,5 +33,6 @@ export default {
                 </div>
             </form>
         </div>
-    `
-};
+    `;
+    }
+}
