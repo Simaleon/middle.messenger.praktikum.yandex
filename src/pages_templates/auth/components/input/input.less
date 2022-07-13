@@ -66,11 +66,12 @@
     font-size: @placeholder-font-size;
   }
 
-  &__input.has-val + &__input-focus::after {
+  &__input.auth-input__input_has-val + &__input-focus::after {
     top: -@placeholder-margin;
   }
 
   &__error-message {
+    display: none;
     margin-top: 7px;
     font-weight: 400;
     font-size: 10px;
@@ -78,4 +79,10 @@
     color: @red-color;
     user-select: none;
   }
+}
+
+.auth-input_has-error {
+    .auth-input__error-message {
+        display: block;
+    }
 }

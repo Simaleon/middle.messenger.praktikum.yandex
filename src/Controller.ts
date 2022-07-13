@@ -10,7 +10,7 @@ export default class Controller {
         this._component = new component(opts?.data);
 
         if(opts?.model) {
-            opts.model.getData().then((result: { property: string, value: string }[]) => {
+            opts.model.getData().then((result: any) => {
                 this._component.setProperties(result);
 
                 this.mount();

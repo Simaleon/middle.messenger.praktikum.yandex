@@ -6,9 +6,23 @@ export default class Input extends Component {
     data() {
         return {
             error: '',
-                name: '',
+            name: '',
             placeholder: '',
-            type: 'text',
+            type: 'text'
+        }
+    }
+
+    methods() {
+        return {
+            blur(this: Record<string, any>) {
+                const input = this.element().querySelector('input');
+
+                if(input.value) {
+                    input.classList.add('auth-input__input_has-val');
+                } else {
+                    input.classList.remove('auth-input__input_has-val');
+                }
+            }
         }
     }
 
@@ -16,7 +30,7 @@ export default class Input extends Component {
         return `
         <div class="auth-input">
             <div class="auth-input__wrapper">
-                <input class="auth-input__input" :type="type" :name="name" />
+                <input class="auth-input__input" :type="type" :name="name" @blur="blur" />
                 <span class="auth-input__input-focus" :data-placeholder="placeholder"></span>
             </div>
             <div class="auth-input__error-message">{{ error }}</div>

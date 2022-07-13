@@ -1,6 +1,7 @@
 import EventBus from "../EventBus";
 import Templator from "./Templator";
 import { merge } from "./utils";
+import {v4 as makeUUID} from 'uuid';
 
 export default class Component {
     static EVENTS = {
@@ -12,6 +13,8 @@ export default class Component {
 
     private _element: HTMLElement | null = null;
     private _eventBus: EventBus = new EventBus();
+    private _events: Record<string, (...args: any) => void> = {};
+    private _id: string = makeUUID();
     private readonly _properties: Record<string, any> = {};
 
     constructor(properties: Record<string, any> = {}) {
@@ -22,13 +25,29 @@ export default class Component {
             return components;
         };
 
-        const methods = this.methods();
+        const initiatedMethods = this.methods(),
+            methods: Record<string, () => void> = {},
+            context = Object.assign({}, this.properties(), this.methods());
+
+        context.element = () => this.element();
+
+        for(const i in initiatedMethods) {
+            methods[i] = (...args: any) => initiatedMethods[i].call(context, ...args);
+        }
 
         this.methods = () => {
             return methods;
         };
 
         const eventBus = this.eventBus();
+
+        Object.keys(properties).forEach((prop: string) => {
+            if(prop.startsWith('@:')) {
+                this._events[prop.substring(2)] = properties[prop];
+
+                delete properties[prop];
+            }
+        });
 
         this._properties = new Proxy(merge(this.data(), properties), {
             set(target: Record<string, any>, prop: string, val: any) {
@@ -54,22 +73,30 @@ export default class Component {
         eventBus.emit(Component.EVENTS.INIT);
     }
 
-    private _componentDidMount() {
+    private _componentDidMount(): void {
         this.componentDidMount();
     }
 
-    private _componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>) {
+    private _componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>): void {
         if(this.componentDidUpdate(oldProps, newProps)) {
             this.eventBus().emit(Component.EVENTS.FLOW_RENDER);
         }
     }
 
-    private render() {
+    private init(): void {
+        this._events.init && this._events.init(this);
+
+        this.eventBus().emit(Component.EVENTS.FLOW_RENDER);
+    }
+
+    private render(): void {
         const element = Templator.compile(this.template(), {
             components: this.components(),
             data: this._properties,
             methods: this.methods()
         });
+
+        element.id = this.id();
 
         if(this._element) {
             this._element.replaceWith(element);
@@ -86,7 +113,11 @@ export default class Component {
         return {};
     }
 
-    protected methods(): Record<string, () => void> {
+    protected eventBus(): EventBus {
+        return this._eventBus;
+    }
+
+    protected methods(): Record<string, (...args: any) => any | void> {
         return {};
     }
 
@@ -94,17 +125,17 @@ export default class Component {
         throw new Error('Method should be overridden');
     }
 
-    componentDidMount() {
-        return true;
+    componentDidMount(): void {
+        return;
     }
 
-    componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>) {
+    componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>): boolean {
         oldProps && newProps;
 
         return true;
     }
 
-    dispatchComponentDidMount() {
+    dispatchComponentDidMount(): void {
         this.eventBus().emit(Component.EVENTS.FLOW_CDM);
     }
 
@@ -112,17 +143,17 @@ export default class Component {
         return this._element as HTMLElement;
     }
 
-    eventBus() {
-        return this._eventBus;
+    id(): string {
+        return this._id;
     }
 
-    init() {
-        this.eventBus().emit(Component.EVENTS.FLOW_RENDER);
+    properties() {
+        return this._properties;
     }
 
     setProperties(newProperties: Record<string, any>): Component {
         if(newProperties) {
-            merge(this._properties, newProperties);
+            Object.assign(this._properties, newProperties);
         }
 
         return this;

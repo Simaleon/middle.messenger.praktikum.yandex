@@ -1,16 +1,15 @@
-@grey-color: #EFEFEF;
-@left-size: 310px;
+@import "/src/styles/variables";
 
 .chat {
   display: flex;
   height: 100%;
 
   &__nav {
-    width: @left-size;
+    width: 310px;
     height: 100%;
     padding: 5px 10px;
-    border-right: 1px solid #EAEAEA;
-    background-color: #FBFBFB;
+    border-right: 1px solid @border-color-grey;
+    background-color: @background-grey;
 
     &-header {
       margin-bottom: 14px;
@@ -31,12 +30,12 @@
     }
 
     &-chat-list {
-      border-top: 1px solid #EAEAEA;
+      border-top: 1px solid @border-color-grey;
     }
   }
 
-  &.__main {
-    width: calc(100% - @left-size);
+  &__main {
+      flex-grow: 1;
   }
 
   &__dummy {
