@@ -1,7 +1,6 @@
 import EventBus from "../EventBus";
 import Templator from "./Templator";
 import { merge } from "./utils";
-import {v4 as makeUUID} from 'uuid';
 
 export default class Component {
     static EVENTS = {
@@ -14,7 +13,6 @@ export default class Component {
     private _element: HTMLElement | null = null;
     private _eventBus: EventBus = new EventBus();
     private _events: Record<string, (...args: any) => void> = {};
-    private _id: string = makeUUID();
     private readonly _properties: Record<string, any> = {};
 
     constructor(properties: Record<string, any> = {}) {
@@ -96,8 +94,6 @@ export default class Component {
             methods: this.methods()
         });
 
-        element.id = this.id();
-
         if(this._element) {
             this._element.replaceWith(element);
         }
@@ -141,10 +137,6 @@ export default class Component {
 
     element(): HTMLElement {
         return this._element as HTMLElement;
-    }
-
-    id(): string {
-        return this._id;
     }
 
     properties() {
