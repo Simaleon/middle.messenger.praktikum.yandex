@@ -1,5 +1,7 @@
 # Чат
 
+Ссылка на актуальный [pull request](https://github.com/Simaleon/middle.messenger.praktikum.yandex/pull/3)
+
 ## Описание
 
 Небольшое веб-приложение для изучения принципов работы современных фреймворков.
