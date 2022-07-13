@@ -1,70 +1,65 @@
-@grey-color: #EFEFEF;
-@left-size: 310px;
+@import "/src/styles/variables";
 
 .chat {
   display: flex;
   height: 100%;
 
-  .left {
-    width: @left-size;
+  &__nav {
+    width: 310px;
     height: 100%;
     padding: 5px 10px;
-    border-right: 1px solid #EAEAEA;
-    background-color: #FBFBFB;
+    border-right: 1px solid @border-color-grey;
+    background-color: @background-grey;
 
-    .head {
+    &-header {
       margin-bottom: 14px;
-
-      .profile {
-        display: flex;
-        align-items: center;
-
-        .avatar {
-          width: 47px;
-          height: 47px;
-          border: 1px solid @grey-color;
-          border-radius: 50%;
-          background-color: @grey-color;
-        }
-
-        .name {
-          color: #1E1E1E;
-          font-weight: 600;
-          font-size: 13px;
-          line-height: 13px;
-          margin-left: 10px;
-          text-decoration: none;
-        }
-      }
-
-      .grey-input {
-        width: 100%;
-        margin-top: 4px;
-        height: 32px;
-        background: @grey-color;
-        border-radius: 5px;
-        padding: 10px;
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 12px;
-        color: #1E1E1E;
-        border: none;
-        outline: none;
-      }
     }
 
-    .chat-list {
-      border-top: 1px solid #EAEAEA;
+    &-search {
+      width: 100%;
+      margin-top: 4px;
+      height: 32px;
+      background: @grey-color;
+      border-radius: 5px;
+      padding: 10px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 12px;
+      border: none;
+      outline: none;
+    }
+
+    &-chat-list {
+      border-top: 1px solid @border-color-grey;
     }
   }
 
-  .right {
-    width: calc(100% - @left-size);
+  &__main {
+      flex-grow: 1;
   }
 
-  .dummy {
+  &__dummy {
     display: flex;
     align-content: center;
     justify-content: center;
+  }
+}
+
+.chat-profile {
+  display: flex;
+  align-items: center;
+
+  &__avatar {
+    width: 47px;
+    height: 47px;
+    border: 1px solid @grey-color;
+    border-radius: 50%;
+    background-color: @grey-color;
+  }
+
+  &__name {
+    font-weight: 600;
+    margin-left: 10px;
+    text-decoration: none;
   }
 }

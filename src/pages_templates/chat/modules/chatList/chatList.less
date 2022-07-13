@@ -1,0 +1,63 @@
+@import "/src/styles/variables";
+
+.chat-list-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid @border-color-grey;
+    margin-top: 12px;
+    padding-bottom: 12px;
+    cursor: pointer;
+
+    &__avatar {
+        width: 47px;
+        height: 47px;
+        background-color: @grey-color;
+        border-radius: 50%;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    &__desc-wrapper {
+        flex-grow: 1;
+        margin-left: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__header {
+        font-weight: 600;
+    }
+
+    &__last-message,
+    &__date {
+        color: @font-color-secondary;
+    }
+
+    &__last-message {
+        margin-top: 4px;
+
+        overflow: hidden;
+        max-height: @font-size * 2;
+    }
+
+    &__last-message-yours {
+        font-weight: 600;
+        margin-right: 0.2em;
+    }
+
+    &__date {
+        font-size: 9px;
+    }
+
+    &__unread-message-count {
+        display: inline-block;
+        min-width: 21px;
+        text-align: center;
+        font-size: 11px;
+        color: white;
+        background-color: @blue-color;
+        border-radius: 50%;
+        padding: 4px;
+        margin-top: 14px;
+    }
+}

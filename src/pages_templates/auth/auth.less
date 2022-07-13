@@ -1,10 +1,12 @@
+@import "/src/styles/variables";
+
 .auth-page {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
 
-  .auth-form {
+  &__auth-form {
     width: 340px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.14);
     border-radius: 12px;
@@ -14,26 +16,25 @@
     justify-content: space-between;
   }
 
-  h1 {
+  &__header {
     font-weight: 500;
     font-size: 20px;
     line-height: 20px;
     text-align: center;
-    color: #1E1E1E;
     user-select: none;
     margin: 0;
   }
 
-  .btn {
+  &__button {
     display: block;
     width: 100%;
   }
 
-  .link {
+  &__link {
     display: block;
     text-align: center;
     margin-top: 14px;
-    color: #3369F3;
+    color: @blue-color;
     font-weight: 500;
     font-size: 11px;
     line-height: 11px;

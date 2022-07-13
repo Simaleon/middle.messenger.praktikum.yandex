@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "commonjs",
+    "target": "es2016",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "declaration": false,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
