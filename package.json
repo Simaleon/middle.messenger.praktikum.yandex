@@ -6,8 +6,7 @@
     "build": "parcel build src/pages/*.html --no-scope-hoist",
     "start": "node ./server.js",
     "lint": "eslint src",
-    "stylelint": "stylelint \"src/**/*.less\"",
-    "prettier": "prettier --write src"
+    "stylelint": "stylelint \"src/**/*.less\""
   },
   "devDependencies": {
     "@parcel/transformer-less": "2.6.1",
@@ -17,7 +16,6 @@
     "express": "4.18.1",
     "parcel": "2.6.1",
     "postcss-less": "^6.0.0",
-    "prettier": "2.7.1",
     "stylelint": "14.9.1",
     "stylelint-config-recommended-less": "1.0.4",
     "stylelint-less": "1.0.6",
