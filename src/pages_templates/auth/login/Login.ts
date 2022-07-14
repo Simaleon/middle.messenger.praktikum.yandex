@@ -1,7 +1,7 @@
 import Component from "../../../templator/Component";
 
 import './login.less';
-import input from '../components/input/Input';
+import input from '../../../components/input/Input';
 import button from "../../../components/button/Button";
 
 export default class Login extends Component {

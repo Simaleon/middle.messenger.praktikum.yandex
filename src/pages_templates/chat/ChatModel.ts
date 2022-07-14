@@ -4,11 +4,9 @@ export type chatListItem = {
     name: string
     lastMessage: string
     lastMessageAuthorId: string
-    // todo
-    //timestamp: number
     timestamp: string
     unreadCount: number,
-    dialog_id: number
+    id: string
 };
 
 export type message = {
@@ -23,9 +21,20 @@ export type message = {
     ]
 };
 
+export type dialog = {
+    name: string,
+    messages: message[]
+};
+
+export type chatData = {
+    user_id: string,
+    chats: chatListItem[],
+    dialogs: Record<string, dialog>
+};
+
 export default class ChatModel extends Model {
-    static getData(): Promise<{ chats: chatListItem[] }> {
-        return new Promise<any>((resolve) => {
+    static getData(): Promise<chatData> {
+        return new Promise<chatData>((resolve) => {
             resolve({
                 user_id: '1',
                 chats: [

@@ -282,8 +282,6 @@ function proceedNode(node: HTMLElement, componentDesc: componentDesc, localConte
                             if(parseExpression(node.attributes[i].value, componentDesc, localContext)) {
                                 node.classList.add(node.attributes[i].name.substring(node.attributes[i].name.indexOf('-') + 1));
                             }
-                        } else if (node.attributes[i].name.startsWith('@:')) {
-                            data[node.attributes[i].name] = componentDesc.methods[node.attributes[i].value];
                         } else if (node.attributes[i].name.startsWith(':')) {
                             data[node.attributes[i].name.substring(1)] = parseExpression(node.attributes[i].value, componentDesc, localContext);
                         } else if (node.attributes[i].name === 'if' ||
@@ -294,15 +292,18 @@ function proceedNode(node: HTMLElement, componentDesc: componentDesc, localConte
                         }
                     }
 
-                    const newNode: HTMLElement = new componentDesc.components[node.localName](data).element() as HTMLElement;
+                    const component: Component = new componentDesc.components[node.localName](data),
+                        newNode: HTMLElement = component.element() as HTMLElement;
 
                     node.classList.forEach(cssClass => {
                         newNode.classList.add(cssClass);
                     });
 
-                    setEventHandlers(componentDesc, node, newNode);
-
                     node.replaceWith(newNode);
+
+                    component.dispatchComponentDidMount();
+
+                    setEventHandlers(componentDesc, node, newNode);
                 }
             } else {
                 node.getAttributeNames().forEach((attr: string) => {
