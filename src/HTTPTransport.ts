@@ -6,13 +6,9 @@ enum METHODS {
 }
 
 function queryStringify(data: Record<string, any>) {
-    let str = '';
-
-    for(const i in data) {
-        str += `&${i}=${data[i].toString()}`;
-    }
-
-    return str.substring(1);
+    return Object.entries(data).reduce((accumulator: string, currentValue: [string, any]) => {
+        return accumulator+= `&${currentValue[0]}=${data[currentValue[1]].toString()}`;
+    }, '').substring(1);
 }
 
 type options = {

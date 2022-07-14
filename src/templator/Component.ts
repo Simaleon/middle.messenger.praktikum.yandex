@@ -12,10 +12,25 @@ export default class Component {
 
     private _element: HTMLElement | null = null;
     private _eventBus: EventBus = new EventBus();
-    private _events: Record<string, (...args: any) => void> = {};
     private readonly _properties: Record<string, any> = {};
 
     constructor(properties: Record<string, any> = {}) {
+        this._properties = new Proxy(merge(this.data(), properties), {
+            set(target: Record<string, any>, prop: string, val: any) {
+                const oldTarget = structuredClone(target);
+
+                target[prop] = val;
+
+                eventBus.emit(Component.EVENTS.FLOW_CDU, oldTarget, target);
+
+                return true;
+            },
+            deleteProperty() {
+                // todo
+                return true;
+            }
+        });
+
         // avoid re-creating the object on next calls
         const components = this.components();
 
@@ -39,30 +54,6 @@ export default class Component {
 
         const eventBus = this.eventBus();
 
-        Object.keys(properties).forEach((prop: string) => {
-            if(prop.startsWith('@:')) {
-                this._events[prop.substring(2)] = properties[prop];
-
-                delete properties[prop];
-            }
-        });
-
-        this._properties = new Proxy(merge(this.data(), properties), {
-            set(target: Record<string, any>, prop: string, val: any) {
-                const oldTarget = structuredClone(target);
-
-                target[prop] = val;
-
-                eventBus.emit(Component.EVENTS.FLOW_CDU, oldTarget, target);
-
-                return true;
-            },
-            deleteProperty() {
-                // todo
-                return true;
-            }
-        });
-
         eventBus.on(Component.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Component.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
         eventBus.on(Component.EVENTS.FLOW_RENDER, this.render.bind(this));
@@ -82,8 +73,6 @@ export default class Component {
     }
 
     private init(): void {
-        this._events.init && this._events.init(this);
-
         this.eventBus().emit(Component.EVENTS.FLOW_RENDER);
     }
 
@@ -125,9 +114,7 @@ export default class Component {
         return;
     }
 
-    componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>): boolean {
-        oldProps && newProps;
-
+    componentDidUpdate(_oldProps: Record<string, any>, _newProps: Record<string, any>): boolean {
         return true;
     }
 

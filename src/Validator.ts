@@ -1,3 +1,19 @@
+const emailRegExp = /^\S+@\S+\.\S+$/,
+    loginRegExp = /(?!^\d+$)^[A-ZА-Яa-zа-я][a-zа-я-_0-9]{2,}$/,
+    nameRegExp = /^[A-ZА-Я][a-zа-я-]+$/,
+    notEmptyRegExp = /^.+/,
+    passwordRegExp = /^(?=.*\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,40})$/,
+    phoneRegExp = /^\+?[1-9]{1}[0-9]{3,14}$/;
+
+export {
+    emailRegExp,
+    loginRegExp,
+    nameRegExp,
+    notEmptyRegExp,
+    passwordRegExp,
+    phoneRegExp
+};
+
 export type description = {
     fields: Record<string, string | RegExp | ((form: HTMLElement, value: string) => boolean)>
     onValid?: (field: HTMLElement) => void
@@ -44,7 +60,7 @@ export default class Validator {
 
                 validationArr.push(validationFunc);
             } else {
-                throw new Error('Fields doesn\'t exists');
+                throw new Error('Field doesn\'t exists');
             }
         }
 

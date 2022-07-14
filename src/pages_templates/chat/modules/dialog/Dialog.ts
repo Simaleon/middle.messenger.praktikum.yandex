@@ -1,7 +1,8 @@
 import Component from "../../../../templator/Component";
 import { message } from "../../ChatModel";
 import './dialog.less';
-import Validator from "../../../../Validator";
+import Validator, { notEmptyRegExp } from "../../../../Validator";
+import { dialog } from "../../ChatModel";
 
 export default class Dialog extends Component {
     data() {
@@ -13,7 +14,7 @@ export default class Dialog extends Component {
 
     methods() {
         return {
-            groupMessages(this: Record<string, any>): { date: Date, messages: message[] }[] {
+            groupMessages(this: { dialog?: dialog }): { date: Date, messages: message[] }[] {
                 const groupedMessages: { date: Date, messages: message[] }[] = [];
 
                 let currentDate: Date | null,
@@ -55,7 +56,7 @@ export default class Dialog extends Component {
     componentDidMount() {
         new Validator(this.element().getElementsByTagName('form')[0], {
             fields: {
-                message: '^.+',
+                message: notEmptyRegExp
             }
         });
     }

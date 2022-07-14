@@ -1,8 +1,9 @@
 import Component from "../../../templator/Component";
-import Validator from "../../../Validator";
+import Validator, { emailRegExp, phoneRegExp, nameRegExp, loginRegExp } from "../../../Validator";
+import { onInvalid, onValid, firstPasswordValidation, secondPasswordValidation } from "../../../validation";
 
 import './registration.less';
-import input from '../components/input/Input';
+import input from '../../../components/input/Input';
 import button from "../../../components/button/Button";
 
 export default class Registration extends Component {
@@ -16,51 +17,23 @@ export default class Registration extends Component {
     componentDidMount() {
         new Validator(this.element().getElementsByTagName('form')[0], {
             fields: {
-                email: '^\\S+@\\S+\\.\\S+$',
-                phone: '^[\\+0-9][0-9]{9,14}$',
-                first_name: '^[A-ZА-Я][a-zа-я-]+$',
-                second_name: '^[A-ZА-Я][a-zа-я-]+$',
-                login: '(?!^\\d+$)^[A-ZА-Яa-zа-я][a-zа-я-_0-9]{2,}$',
-                password: (form: HTMLElement, value: string): boolean => {
-                    const psw_2: HTMLInputElement | null = form.querySelector(`[name="password_2"]`);
-
-                    if(psw_2) {
-                        return !!value && new RegExp('^(?=.*\\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,40})$').test(value) && psw_2.value === value;
-                    } else {
-                        throw new Error('Password 2 doesn\'t exists');
-                    }
-                },
-                password_2: (form: HTMLElement, value: string): boolean => {
-                    const psw: HTMLInputElement | null = form.querySelector(`[name="password"]`);
-
-                    if(psw) {
-                        return !!value && psw.value === value;
-                    } else {
-                        throw new Error('Password doesn\'t exists');
-                    }
-                },
+                email: emailRegExp,
+                phone: phoneRegExp,
+                first_name: nameRegExp,
+                second_name: nameRegExp,
+                login: loginRegExp,
+                password: firstPasswordValidation,
+                password_2: secondPasswordValidation
             },
-            onValid(field) {
-                const element = field.closest('.auth-input');
-
-                if(element) {
-                    element.classList.remove('auth-input_has-error');
-                }
-            },
-            onInvalid(field) {
-                const element = field.closest('.auth-input');
-
-                if(element) {
-                    element.classList.add('auth-input_has-error');
-                }
-            }
+            onValid: onValid,
+            onInvalid: onInvalid
         });
     }
 
-    protected methods(): Record<string, (...args: any) => (any | void)> {
+    methods() {
         return {
-            submit(evt) {
-                const formData = new FormData(evt.target);
+            submit(evt: Event) {
+                const formData = new FormData(evt.target as HTMLFormElement);
                 console.log(...formData);
             }
         }
@@ -73,11 +46,11 @@ export default class Registration extends Component {
                 <div>
                     <h1 class="auth-page__header">Регистрация</h1>
                     <custom-input name="email" class="auth-page__input" type="email" placeholder="Почта" error="Некорректный email"></custom-input>
-                    <custom-input name="login" class="auth-page__input" placeholder="Логин" error="Такой логин уже существует"></custom-input>
-                    <custom-input name="first_name" class="auth-page__input" placeholder="Имя"></custom-input>
-                    <custom-input name="second_name" class="auth-page__input" placeholder="Фамилия"></custom-input>
+                    <custom-input name="login" class="auth-page__input" placeholder="Логин" error="Некорректный логин"></custom-input>
+                    <custom-input name="first_name" class="auth-page__input" placeholder="Имя" error="Некорректное имя"></custom-input>
+                    <custom-input name="second_name" class="auth-page__input" placeholder="Фамилия" error="Некорректная фамилия"></custom-input>
                     <custom-input name="phone" class="auth-page__input" type="phone" placeholder="Телефон" error="Некорректный формат телефона"></custom-input>
-                    <custom-input name="password" class="auth-page__input" type="password" placeholder="Пароль"></custom-input>
+                    <custom-input name="password" class="auth-page__input" type="password" placeholder="Пароль" error="Неверный формат пароля"></custom-input>
                     <custom-input name="password_2" class="auth-page__input" type="password" placeholder="Повторите пароль" error="Пароли не совпадают"></custom-input>
                 </div>
                 <div>

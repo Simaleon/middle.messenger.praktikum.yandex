@@ -3,11 +3,14 @@ import Component from "../../../templator/Component";
 import './change.less';
 import button from "../../../components/button/Button";
 import Validator from "../../../Validator";
+import { firstPasswordValidation, onInvalid, onValid, secondPasswordValidation } from "../../../validation";
+import Input from "../../../components/input/Input";
 
 export default class ChangePassword extends Component {
     components() {
         return {
-            'custom-button': button
+            'custom-button': button,
+            'custom-input': Input
         }
     }
 
@@ -22,18 +25,20 @@ export default class ChangePassword extends Component {
                 {
                     property: 'Новый пароль',
                     value: 'newsupermegapass',
-                    name: 'password'
+                    name: 'password',
+                    error: 'Неверный формат пароля'
                 },
                 {
                     property: 'Повторите новый пароль',
                     value: 'newsupermegapass',
-                    name: 'password_2'
+                    name: 'password_2',
+                    error: 'Пароли не совпадают'
                 }
             ]
         }
     }
 
-    protected methods(): Record<string, (...args: any) => (any | void)> {
+    methods() {
         return {
             submit(evt: SubmitEvent) {
                 const formData = new FormData(evt.target as HTMLFormElement);
@@ -44,41 +49,13 @@ export default class ChangePassword extends Component {
     }
 
     componentDidMount() {
-        new Validator(this.element().getElementsByTagName('form')[0], {
+        new Validator(this.element(), {
             fields: {
-                password: (form: HTMLElement, value: string): boolean => {
-                    const psw_2: HTMLInputElement | null = form.querySelector(`[name="password_2"]`);
-
-                    if(psw_2) {
-                        return !!value && new RegExp('^(?=.*\\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,40})$').test(value) && psw_2.value === value;
-                    } else {
-                        throw new Error('Password 2 doesn\'t exists');
-                    }
-                },
-                password_2: (form: HTMLElement, value: string): boolean => {
-                    const psw: HTMLInputElement | null = form.querySelector(`[name="password"]`);
-
-                    if(psw) {
-                        return !!value && psw.value === value;
-                    } else {
-                        throw new Error('Password doesn\'t exists');
-                    }
-                },
+                password: firstPasswordValidation,
+                password_2: secondPasswordValidation
             },
-            onValid(field) {
-                const element = field.closest('.auth-input');
-
-                if(element) {
-                    element.classList.remove('auth-input_has-error');
-                }
-            },
-            onInvalid(field) {
-                const element = field.closest('.auth-input');
-
-                if(element) {
-                    element.classList.add('auth-input_has-error');
-                }
-            }
+            onValid: onValid,
+            onInvalid: onInvalid
         });
     }
 
@@ -87,7 +64,7 @@ export default class ChangePassword extends Component {
         <form class="change-data" @submit="submit">
             <div for="item in dataList" class="data-string">
                 <div class="data-string__property">{{ item.property }}</div>
-                <input class="change-data__input" type="password" :value="item.value" :name="item.name" />
+                <custom-input class="change-data__input input_no-placeholder" type="password" :value="item.value" :name="item.name" :error="item.error"></custom-input>
             </div>
             <custom-button class="button_blue" text="Сохранить"></custom-button>
         </form>

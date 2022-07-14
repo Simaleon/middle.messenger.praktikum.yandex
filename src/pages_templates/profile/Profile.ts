@@ -22,13 +22,9 @@ export default class Profile extends Component {
 
     methods() {
         return {
-            href(this: Record<string, any>) {
+            href(this: { mode: string }) {
                 if(this.mode === 'preview') {
                     return '/chat.html';
-                }
-
-                if(this.mode === 'changeData') {
-                    return '/profile.html';
                 }
 
                 return '/profile.html';
