@@ -1,6 +1,8 @@
 import EventBus from "../EventBus";
 import Templator from "./Templator";
-import { merge } from "./utils";
+import { merge } from "../utils";
+import { keyValueObject } from "../types";
+import { cloneDeep } from "../utils";
 
 export default class Component {
     static EVENTS = {
@@ -12,12 +14,12 @@ export default class Component {
 
     private _element: HTMLElement | null = null;
     private _eventBus: EventBus = new EventBus();
-    private readonly _properties: Record<string, any> = {};
+    private readonly _properties: keyValueObject = {};
 
-    constructor(properties: Record<string, any> = {}) {
+    constructor(properties: keyValueObject = {}) {
         this._properties = new Proxy(merge(this.data(), properties), {
-            set(target: Record<string, any>, prop: string, val: any) {
-                const oldTarget = structuredClone(target);
+            set(target: keyValueObject, prop: string, val: any) {
+                const oldTarget = cloneDeep(target);
 
                 target[prop] = val;
 
@@ -66,7 +68,7 @@ export default class Component {
         this.componentDidMount();
     }
 
-    private _componentDidUpdate(oldProps: Record<string, any>, newProps: Record<string, any>): void {
+    private _componentDidUpdate(oldProps: keyValueObject, newProps: keyValueObject): void {
         if(this.componentDidUpdate(oldProps, newProps)) {
             this.eventBus().emit(Component.EVENTS.FLOW_RENDER);
         }
@@ -94,7 +96,7 @@ export default class Component {
         return {};
     }
 
-    protected data(): Record<string, any> {
+    protected data(): keyValueObject {
         return {};
     }
 
@@ -114,7 +116,7 @@ export default class Component {
         return;
     }
 
-    componentDidUpdate(_oldProps: Record<string, any>, _newProps: Record<string, any>): boolean {
+    componentDidUpdate(_oldProps: keyValueObject, _newProps: keyValueObject): boolean {
         return true;
     }
 
@@ -126,15 +128,23 @@ export default class Component {
         return this._element as HTMLElement;
     }
 
+    hide() {
+        this.element().style.display = 'none';
+    }
+
     properties() {
         return this._properties;
     }
 
-    setProperties(newProperties: Record<string, any>): Component {
+    setProperties(newProperties: keyValueObject): Component {
         if(newProperties) {
             Object.assign(this._properties, newProperties);
         }
 
         return this;
+    }
+
+    show() {
+        this.element().style.display = 'block';
     }
 }

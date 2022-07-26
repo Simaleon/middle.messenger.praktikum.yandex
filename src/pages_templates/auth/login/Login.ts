@@ -3,6 +3,7 @@ import Component from "../../../templator/Component";
 import './login.less';
 import input from '../../../components/input/Input';
 import button from "../../../components/button/Button";
+import AuthController from "../../../controllers/AuthController";
 
 export default class Login extends Component {
     components() {
@@ -13,11 +14,10 @@ export default class Login extends Component {
     }
     methods() {
         return {
-            submit(evt: SubmitEvent) {
-                const formData = new FormData(evt.target as HTMLFormElement);
-                console.log(...formData);
+            submit(evt: Event) {
                 evt.preventDefault();
-                location.href='/chat.html';
+
+                AuthController.signin(new FormData(evt.target as HTMLFormElement));
             }
         }
     }
@@ -33,7 +33,7 @@ export default class Login extends Component {
                 </div>
                 <div>
                     <main-button class="auth-page__button button_blue" text="Войти" @click="btnClick"></main-button>
-                    <a href="/registration.html" class="auth-page__link">Нет аккаунта?</a>
+                    <a href="/sign-up" class="auth-page__link">Нет аккаунта?</a>
                 </div>
             </form>
         </div>

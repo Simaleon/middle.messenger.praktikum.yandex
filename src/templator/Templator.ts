@@ -1,8 +1,9 @@
 import Component from "./Component";
+import {keyValueObject} from "../types";
 
 type componentDesc = {
     components: Record<string, typeof Component>;
-    data: Record<string, any>;
+    data: keyValueObject;
     methods: Record<string, () => void>;
 };
 
@@ -14,10 +15,10 @@ const TEMPLATE_REGEXP = /\{\{(.*?)\}\}/gi,
     arrayRegexp = /^\[.*\]$/;
 
 // get value from object by string path, for example 'user.description.displayName'
-function get(obj: Record<string, any>, path: string): any {
+function get(obj: keyValueObject, path: string): any {
     const keys: string[] = path.split('.');
 
-    let result: Record<string, any> = obj;
+    let result: keyValueObject = obj;
 
     for (const key of keys) {
         if(!result) {
@@ -32,7 +33,7 @@ function get(obj: Record<string, any>, path: string): any {
 
 // parse string (with variables and methods from context) to expression and calculate result
 // logical, math, ternary condition operator and brackets not supported yet
-function parseExpression(expression: string, context: Record<string, any>, localContext?: Record<string, any>): any {
+function parseExpression(expression: string, context: keyValueObject, localContext?: keyValueObject): any {
     if(localContext) {
         context = Object.assign({}, context, { data: localContext });
     }
@@ -227,7 +228,7 @@ function setEventHandlers(componentDesc: componentDesc, node: HTMLElement, newNo
     });
 }
 
-function proceedNode(node: HTMLElement, componentDesc: componentDesc, localContext?: Record<string, any>) {
+function proceedNode(node: HTMLElement, componentDesc: componentDesc, localContext?: keyValueObject) {
     if(node.nodeType === 3) {    // text
         // parse variables
         let textContent: string = node.textContent || '',
@@ -275,7 +276,7 @@ function proceedNode(node: HTMLElement, componentDesc: componentDesc, localConte
         } else {
             if (node.tagName.indexOf('-') > -1) { // custom element
                 if (componentDesc.components[node.localName]) {
-                    const data: Record<string, any> = {};
+                    const data: keyValueObject = {};
 
                     for (let i = 0; i < node.attributes.length; i++) {
                         if(node.attributes[i].name.startsWith(':class')) {

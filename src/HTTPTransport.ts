@@ -1,3 +1,5 @@
+import { keyValueObject } from "./types";
+
 enum METHODS {
     GET = 'GET',
     PUT = 'PUT',
@@ -5,7 +7,7 @@ enum METHODS {
     DELETE = 'DELETE'
 }
 
-function queryStringify(data: Record<string, any>) {
+function queryStringify(data: keyValueObject) {
     return Object.entries(data).reduce((accumulator: string, currentValue: [string, any]) => {
         return accumulator+= `&${currentValue[0]}=${data[currentValue[1]].toString()}`;
     }, '').substring(1);
@@ -15,13 +17,14 @@ type options = {
     data?: any,
     timeout?: number,
     headers?: Record<string, string>
+    withCredentials?: boolean
     method: METHODS
 }
 
-type optionsWithoutMethod = Omit<options, 'method'>;
+export type optionsWithoutMethod = Omit<options, 'method'>;
 
-export default class HTTPTransport {
-    get = (url: string, options: optionsWithoutMethod = {}) => {
+export class HTTPTransport {
+    get(url: string, options: optionsWithoutMethod = {}): Promise<XMLHttpRequest>  {
         if(options.data) {
             url += '?' + queryStringify(options.data);
         }
@@ -29,23 +32,23 @@ export default class HTTPTransport {
         return this.request(url, {...options, method: METHODS.GET}, options.timeout);
     };
 
-    put = (url: string, options: optionsWithoutMethod = {}) => {
+    put(url: string, options: optionsWithoutMethod = {}): Promise<XMLHttpRequest>  {
         return this.request(url, {...options, method: METHODS.PUT}, options.timeout);
     };
 
-    post = (url: string, options: optionsWithoutMethod = {}) => {
+    post(url: string, options: optionsWithoutMethod = {}): Promise<XMLHttpRequest>  {
         return this.request(url, {...options, method: METHODS.POST}, options.timeout);
     };
 
-    delete = (url: string, options: optionsWithoutMethod = {}) => {
+    delete(url: string, options: optionsWithoutMethod = {}): Promise<XMLHttpRequest>  {
         return this.request(url, {...options, method: METHODS.DELETE}, options.timeout);
     };
 
     // options:
     // headers — obj
     // data — obj
-    request = (url: string, options: options, timeout = 5000) => {
-        const {method, data} = options;
+    request(url: string, options: options, timeout = 5000): Promise<XMLHttpRequest> {
+        const {method, data, withCredentials = false} = options;
 
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -53,6 +56,7 @@ export default class HTTPTransport {
             xhr.open(method, url);
 
             xhr.timeout = timeout;
+            xhr.withCredentials = withCredentials;
 
             if(options.headers) {
                 for(const i in options.headers) {
@@ -76,3 +80,5 @@ export default class HTTPTransport {
         });
     };
 }
+
+export default new HTTPTransport();

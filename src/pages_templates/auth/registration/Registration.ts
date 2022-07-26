@@ -1,10 +1,10 @@
 import Component from "../../../templator/Component";
-import Validator, { emailRegExp, phoneRegExp, nameRegExp, loginRegExp } from "../../../Validator";
-import { onInvalid, onValid, firstPasswordValidation, secondPasswordValidation } from "../../../validation";
-
+import Validator, { emailRegExp, phoneRegExp, nameRegExp, loginRegExp, passwordRegExp } from "../../../Validator";
+import { onInvalid, onValid, secondPasswordValidation } from "../../../validation";
 import './registration.less';
 import input from '../../../components/input/Input';
 import button from "../../../components/button/Button";
+import AuthController from "../../../controllers/AuthController";
 
 export default class Registration extends Component {
     components() {
@@ -22,7 +22,7 @@ export default class Registration extends Component {
                 first_name: nameRegExp,
                 second_name: nameRegExp,
                 login: loginRegExp,
-                password: firstPasswordValidation,
+                password: passwordRegExp,
                 password_2: secondPasswordValidation
             },
             onValid: onValid,
@@ -33,8 +33,9 @@ export default class Registration extends Component {
     methods() {
         return {
             submit(evt: Event) {
-                const formData = new FormData(evt.target as HTMLFormElement);
-                console.log(...formData);
+                evt.preventDefault();
+
+                AuthController.signup(new FormData(evt.target as HTMLFormElement));
             }
         }
     }
@@ -55,7 +56,7 @@ export default class Registration extends Component {
                 </div>
                 <div>
                     <main-button class="auth-page__button button_blue" text="Зарегистрироваться"></main-button>
-                    <a href="/index.html" class="auth-page__link">Войти</a>
+                    <a href="/" class="auth-page__link">Войти</a>
                 </div>
             </form>
         </div>

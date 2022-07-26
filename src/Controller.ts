@@ -1,28 +1,36 @@
-import Model from "./Model";
-import Component from "./templator/Component";
+import BasicAPI from "./api/BasicAPI";
+import {optionsWithoutMethod} from "./HTTPTransport";
 
-export default class Controller {
-    private _container: HTMLElement;
-    private _component: Component;
+export class Controller {
+    private readonly _apis: BasicAPI[] = [];
 
-    constructor(container: HTMLElement, component: typeof Component, opts?: { model?: typeof Model, data?: Record<string, any> }) {
-        this._container = container;
-        this._component = new component(opts?.data);
+    private _getApi(path: string) {
+        const api = this._apis.find((el) => { return el.match(path); });
 
-        if(opts?.model) {
-            opts.model.getData().then((result: any) => {
-                this._component.setProperties(result);
-
-                this.mount();
-            });
+        if(api) {
+            return api;
         } else {
-            this.mount();
+            throw new Error(`There is no api for path ${path}`);
         }
     }
 
-    private mount(): void {
-        this._container.appendChild(this._component.element());
+    registerAPI(api: BasicAPI) {
+        this._apis.push(api);
+    }
 
-        this._component.dispatchComponentDidMount();
+    get(path: string, options?: optionsWithoutMethod) {
+        const api = this._getApi(path);
+
+        api.get(path, options).then((/*result*/) => {
+            // todo
+        });
+    }
+
+    post(path: string, options?: optionsWithoutMethod): Promise<any> {
+        const api = this._getApi(path);
+
+        return api.post(path, options);
     }
 }
+
+export default new Controller();
